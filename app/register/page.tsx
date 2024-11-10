@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { z } from "zod";
+import { registeruser } from "./actions";
 
 const formSchema = z
   .object({
@@ -40,7 +41,9 @@ export default function RegisterPage() {
   });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    const response = await registeruser({ ...data });
+
+    console.log(response);
   };
 
   return (
