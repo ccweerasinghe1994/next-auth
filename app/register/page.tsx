@@ -21,23 +21,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { z } from "zod";
+import { passwordSchema } from "@/validation/passwordSchema";
 
 const formSchema = z
   .object({
     email: z.string().trim().email({ message: "Invalid email address" }),
-    password: z
-      .string()
-      .min(6, { message: "Password must be at least 6 characters long" })
-      .regex(/[A-Z]/, {
-        message: "Password must contain at least one uppercase letter",
-      })
-      .regex(/[a-z]/, {
-        message: "Password must contain at least one lowercase letter",
-      })
-      .regex(/[0-9]/, { message: "Password must contain at least one number" })
-      .regex(/[^A-Za-z0-9]/, {
-        message: "Password must contain at least one special character",
-      }),
+    password: passwordSchema,
     confirmPassword: z.string().min(6, {
       message: "Confirm Password must be at least 6 characters long",
     }),
@@ -63,14 +52,17 @@ export default function RegisterPage() {
 
   return (
     <main className="flex justify-center items-center min-h-screen">
-      <Card className="sm:w-[300px] md:w-[400px] lg:w-[600px] ">
+      <Card className="w-[380px] ">
         <CardHeader>
           <CardTitle>Register</CardTitle>
           <CardDescription>Register for a new component</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="flex flex-col gap-2"
+            >
               <FormField
                 control={form.control}
                 name="email"
@@ -113,9 +105,7 @@ export default function RegisterPage() {
                 )}
               />
 
-              <Button type="submit" className="mt-4">
-                Register
-              </Button>
+              <Button type="submit">Register</Button>
             </form>
           </Form>
         </CardContent>
