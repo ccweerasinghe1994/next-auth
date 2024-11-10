@@ -17,23 +17,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { passwordMatchSchema } from "@/validation/passwordMatch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { z } from "zod";
-import { passwordSchema } from "@/validation/passwordSchema";
-import { passwordConfirmSchema } from "@/validation/passwordConfirmSchema";
 
 const formSchema = z
   .object({
     email: z.string().trim().email({ message: "Invalid email address" }),
-    password: passwordSchema,
-    confirmPassword: passwordConfirmSchema,
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Passwords do not match",
-  });
+  .and(passwordMatchSchema);
 
 export default function RegisterPage() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,7 +48,7 @@ export default function RegisterPage() {
       <Card className="w-[380px] ">
         <CardHeader>
           <CardTitle>Register</CardTitle>
-          <CardDescription>Register for a new component</CardDescription>
+          <CardDescription>Register for a new account</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
