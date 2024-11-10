@@ -22,14 +22,13 @@ import { useForm } from "react-hook-form";
 
 import { z } from "zod";
 import { passwordSchema } from "@/validation/passwordSchema";
+import { passwordConfirmSchema } from "@/validation/passwordConfirmSchema";
 
 const formSchema = z
   .object({
     email: z.string().trim().email({ message: "Invalid email address" }),
     password: passwordSchema,
-    confirmPassword: z.string().min(6, {
-      message: "Confirm Password must be at least 6 characters long",
-    }),
+    confirmPassword: passwordConfirmSchema,
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
