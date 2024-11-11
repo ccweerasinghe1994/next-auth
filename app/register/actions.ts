@@ -17,30 +17,44 @@ export const registeruser = async ({
   email,
   password,
 }: RegisterData) => {
-  const newUserSchema = z
-    .object({
-      email: z.string().email(),
-    })
-    .and(passwordMatchSchema);
+  try {
+    const newUserSchema = z
+      .object({
+        email: z.string().email(),
+      })
+      .and(passwordMatchSchema);
 
-  const newUserValidation = newUserSchema.safeParse({
-    email,
-    password,
-    confirmPassword,
-  });
+    const newUserValidation = newUserSchema.safeParse({
+      email,
+      password,
+      confirmPassword,
+    });
 
-  if (!newUserValidation.success) {
+    if (!newUserValidation.success) {
+      return {
+        error: true,
+        message:
+          newUserValidation.error.errors[0]?.message ?? "An error occurred",
+      };
+    }
+
+    const hashedPassword = await hash(password, 10);
+
+    await db.insert(users).values({
+      email,
+      password: hashedPassword,
+    });
+  } catch (error) {
+    if ((error as { code: string }).code === "23505") {
+      return {
+        error: true,
+        message: "Hey! This email is already taken. Please try a different one or log in if it's yours.",
+      };
+    }
+
     return {
       error: true,
-      message:
-        newUserValidation.error.errors[0]?.message ?? "An error occurred",
+      message: "An error occurred",
     };
   }
-
-  const hashedPassword = await hash(password, 10);
-
-  await db.insert(users).values({
-    email,
-    password: hashedPassword,
-  });
 };
