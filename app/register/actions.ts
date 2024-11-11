@@ -1,7 +1,10 @@
 "use server";
-
-import { passwordMatchSchema } from "@/validation/passwordMatch";
+import { hash } from "bcryptjs";
 import { z } from "zod";
+
+import { db } from "@/db/drizzel";
+import { users } from "@/db/usersSchema";
+import { passwordMatchSchema } from "@/validation/passwordMatch";
 
 type RegisterData = {
   email: string;
@@ -33,4 +36,11 @@ export const registeruser = async ({
         newUserValidation.error.errors[0]?.message ?? "An error occurred",
     };
   }
+
+  const hashedPassword = await hash(password, 10);
+
+  await db.insert(users).values({
+    email,
+    password: hashedPassword,
+  });
 };
