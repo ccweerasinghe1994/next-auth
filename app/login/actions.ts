@@ -1,3 +1,4 @@
+"user server";
 import { passwordSchema } from "@/validation/passwordSchema";
 import { z } from "zod";
 
