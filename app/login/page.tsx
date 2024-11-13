@@ -20,6 +20,7 @@ import { passwordSchema } from "@/validation/passwordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { login } from "./actions";
 
 export default function Login() {
   const formSchema = z.object({
@@ -35,8 +36,8 @@ export default function Login() {
     },
   });
 
-  const handleSubmit = (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+  const handleSubmit = async (data: z.infer<typeof formSchema>) => {
+    await login(data);
   };
 
   return (
