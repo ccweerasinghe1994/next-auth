@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { emailSchema } from "@/validation/emailSchema";
 import { passwordSchema } from "@/validation/passwordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -24,7 +25,7 @@ import { login } from "./actions";
 
 export default function Login() {
   const formSchema = z.object({
-    email: z.string().trim().email({ message: "Invalid email address" }),
+    email: emailSchema,
     password: passwordSchema,
   });
 

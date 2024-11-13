@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "@/db/drizzel";
 import { users } from "@/db/usersSchema";
 import { passwordMatchSchema } from "@/validation/passwordMatch";
+import { emailSchema } from "@/validation/emailSchema";
 
 type RegisterData = {
   email: string;
@@ -20,7 +21,7 @@ export const registeruser = async ({
   try {
     const newUserSchema = z
       .object({
-        email: z.string().email(),
+        email: emailSchema,
       })
       .and(passwordMatchSchema);
 

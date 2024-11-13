@@ -1,4 +1,5 @@
 "user server";
+import { emailSchema } from "@/validation/emailSchema";
 import { passwordSchema } from "@/validation/passwordSchema";
 import { z } from "zod";
 
@@ -9,7 +10,7 @@ type LoginData = {
 
 export const login = async ({ email, password }: LoginData) => {
   const loginSchema = z.object({
-    email: z.string().trim().email({ message: "Invalid email address" }),
+    email: emailSchema,
     password: passwordSchema,
   });
 

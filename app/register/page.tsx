@@ -21,13 +21,14 @@ import { passwordMatchSchema } from "@/validation/passwordMatch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
+import { emailSchema } from "@/validation/emailSchema";
 import Link from "next/link";
 import { z } from "zod";
 import { registeruser } from "./actions";
 
 const formSchema = z
   .object({
-    email: z.string().trim().email({ message: "Invalid email address" }),
+    email: emailSchema,
   })
   .and(passwordMatchSchema);
 
