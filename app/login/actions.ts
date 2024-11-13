@@ -1,4 +1,5 @@
 "user server";
+import { signIn } from "@/auth";
 import { emailSchema } from "@/validation/emailSchema";
 import { passwordSchema } from "@/validation/passwordSchema";
 import { z } from "zod";
@@ -22,4 +23,8 @@ export const login = async ({ email, password }: LoginData) => {
       message: loginValidation.error.errors[0]?.message ?? "An error occurred",
     };
   }
+
+  try {
+    await signIn("credentials", { email, password, redirect: false });
+  } catch (error) {}
 };
