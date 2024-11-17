@@ -26,7 +26,10 @@ export const loginWithCredentials = async ({ email, password }: LoginData) => {
 
   try {
     await signIn("credentials", { email, password, redirect: false });
-  } catch (error) {
-    console.error(error);
+  } catch {
+    return {
+      error: true,
+      message: "Invalid credentials",
+    };
   }
 };

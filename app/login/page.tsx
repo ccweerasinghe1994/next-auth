@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -19,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { emailSchema } from "@/validation/emailSchema";
 import { passwordSchema } from "@/validation/passwordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -44,6 +46,9 @@ export default function Login() {
     const response = await loginWithCredentials(data);
 
     if (response?.error) {
+      form.setError("root", {
+        message: response.message,
+      });
     } else {
       router.push("/my-account");
     }
@@ -90,7 +95,11 @@ export default function Login() {
                   )}
                   name={"password"}
                 />
-
+                {!!form.formState.errors.root?.message && (
+                  <FormMessage>
+                    {form.formState.errors.root.message}
+                  </FormMessage>
+                )}
                 <Button type={"submit"} className={"w-full"}>
                   Login
                 </Button>
@@ -98,6 +107,22 @@ export default function Login() {
             </form>
           </Form>
         </CardContent>
+        <CardFooter className="flex-col gap-2">
+          <div className="text-muted-foreground text-sm">
+            Don&apos;t have and account?{" "}
+            <Link href={"/register"} className="underline text-sm">
+              {" "}
+              Register
+            </Link>
+          </div>
+          <div className="text-muted-foreground text-sm">
+            Forgot your password?{" "}
+            <Link href={"/reset-password"} className="underline text-sm">
+              {" "}
+              Reset My Password
+            </Link>
+          </div>
+        </CardFooter>
       </Card>
     </main>
   );
