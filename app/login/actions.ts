@@ -1,7 +1,7 @@
-"user server";
-import { signIn } from "@/auth";
+"use client";
 import { emailSchema } from "@/validation/emailSchema";
 import { passwordSchema } from "@/validation/passwordSchema";
+import { signIn } from "next-auth/react";
 import { z } from "zod";
 
 type LoginData = {
@@ -26,5 +26,7 @@ export const login = async ({ email, password }: LoginData) => {
 
   try {
     await signIn("credentials", { email, password, redirect: false });
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+  }
 };

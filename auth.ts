@@ -1,4 +1,4 @@
-"use server";
+import { compare } from "bcryptjs";
 import { eq } from "drizzle-orm";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
@@ -21,13 +21,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!user) {
           throw new Error("Invalid credentials");
         } else {
-          // const passwordCorrect = await compare(
-          //   credentials.password as string,
-          //   user.password!
-          // );
-          // if (!passwordCorrect) {
-          //   throw new Error("Invalid credentials");
-          // }
+          const passwordCorrect = await compare(
+            credentials.password as string,
+            user.password!
+          );
+          if (!passwordCorrect) {
+            throw new Error("Invalid credentials");
+          }
         }
 
         return {
