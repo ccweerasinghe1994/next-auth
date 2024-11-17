@@ -1,7 +1,7 @@
-"use client";
+"use server";
+import { signIn } from "@/auth";
 import { emailSchema } from "@/validation/emailSchema";
 import { passwordSchema } from "@/validation/passwordSchema";
-import { signIn } from "next-auth/react";
 import { z } from "zod";
 
 type LoginData = {
@@ -9,7 +9,7 @@ type LoginData = {
   password: string;
 };
 
-export const login = async ({ email, password }: LoginData) => {
+export const loginWithCredentials = async ({ email, password }: LoginData) => {
   const loginSchema = z.object({
     email: emailSchema,
     password: passwordSchema,

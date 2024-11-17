@@ -19,11 +19,14 @@ import { Input } from "@/components/ui/input";
 import { emailSchema } from "@/validation/emailSchema";
 import { passwordSchema } from "@/validation/passwordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { login } from "./actions";
+import { loginWithCredentials } from "./actions";
 
 export default function Login() {
+  const router = useRouter();
+
   const formSchema = z.object({
     email: emailSchema,
     password: passwordSchema,
@@ -38,7 +41,12 @@ export default function Login() {
   });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    await login(data);
+    const response = await loginWithCredentials(data);
+
+    if (response?.error) {
+    } else {
+      router.push("/my-account");
+    }
   };
 
   return (
