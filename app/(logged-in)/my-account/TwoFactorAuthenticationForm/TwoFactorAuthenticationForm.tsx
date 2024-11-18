@@ -12,7 +12,7 @@ export default function TwoFactorAuthenticationForm({
   );
   const [currentStep, setCurrentStep] = useState<number>(1);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setCurrentStep(2);
   };
 
