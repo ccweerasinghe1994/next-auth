@@ -3,6 +3,7 @@ import { db } from "@/db/drizzel";
 import { passwordResetTokens } from "@/db/passwordResetTokensSchema";
 import { eq } from "drizzle-orm";
 import Link from "next/link";
+import PasswordResetForm from "../PasswordResetForm/PasswordResetForm";
 
 export default async function UpdatePasswordPage({
   searchParams,
@@ -42,7 +43,7 @@ export default async function UpdatePasswordPage({
         </CardHeader>
         <CardContent>
           {tokenIsValid ? (
-            <div> password update form</div>
+            <PasswordResetForm token={token ?? ""} />
           ) : (
             <Link className="underline" href={"/reset-password"}>
               {" "}
