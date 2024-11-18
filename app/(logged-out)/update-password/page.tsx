@@ -3,17 +3,17 @@ import { db } from "@/db/drizzel";
 import { passwordResetTokens } from "@/db/passwordResetTokensSchema";
 import { eq } from "drizzle-orm";
 import Link from "next/link";
-import PasswordResetForm from "../PasswordResetForm/PasswordResetForm";
+import PasswordResetForm from "./PasswordResetForm/PasswordResetForm";
 
 export default async function UpdatePasswordPage({
   searchParams,
 }: {
-  searchParams: {
+  searchParams: Promise<{
     token?: string;
-  };
+  }>;
 }) {
   let tokenIsValid = false;
-  const { token } = searchParams;
+  const { token } = await searchParams;
 
   if (token) {
     const [passwordResetToken] = await db

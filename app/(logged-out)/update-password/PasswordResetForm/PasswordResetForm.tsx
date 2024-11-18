@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { passwordMatchSchema } from "@/validation/passwordMatch";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { updatePassword } from "./actions";
@@ -31,6 +32,10 @@ export default function PasswordResetForm({ token }: { token: string }) {
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
     const response = await updatePassword({ token, ...data });
 
+    if (response?.tokenInvalid) {
+      window.location.reload();
+    }
+
     if (response?.error) {
       form.setError("root", {
         message: response.message,
@@ -45,7 +50,14 @@ export default function PasswordResetForm({ token }: { token: string }) {
     }
   };
 
-  return (
+  return form.formState.isSubmitSuccessful ? (
+    <div>
+      Your password has been updated.{" "}
+      <Link className="underline" href={"/login"}>
+        Please Log into your account{" "}
+      </Link>{" "}
+    </div>
+  ) : (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <fieldset
