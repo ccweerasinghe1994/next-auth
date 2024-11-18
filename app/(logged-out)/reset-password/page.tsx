@@ -74,7 +74,7 @@ export default function ResetPasswordPage() {
                     {form.formState.errors.root?.message}
                   </FormMessage>
                 )}
-                <Button type="submit">Register</Button>
+                <Button type="submit">Reset Password</Button>
               </fieldset>
             </form>
           </Form>
