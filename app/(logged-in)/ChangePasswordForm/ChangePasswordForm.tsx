@@ -9,11 +9,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { passwordMatchSchema } from "@/validation/passwordMatch";
 import { passwordSchema } from "@/validation/passwordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { changePassword } from "./actions";
 
 const formSchema = z
   .object({
@@ -22,6 +24,7 @@ const formSchema = z
   .and(passwordMatchSchema);
 
 export default function ChangePasswordForm() {
+  const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -32,7 +35,20 @@ export default function ChangePasswordForm() {
   });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    const response = await changePassword(data);
+
+    if (response?.error) {
+      form.setError("root", {
+        message: response.message,
+      });
+    } else {
+      toast({
+        title: "Password Updated",
+        description: "Your password has been updated",
+        className: "bg-green-500 text-white",
+      });
+      form.reset();
+    }
   };
 
   return (
@@ -83,6 +99,9 @@ export default function ChangePasswordForm() {
               </FormItem>
             )}
           />
+          {!!form.formState.errors.root && (
+            <FormMessage>{form.formState.errors.root.message}</FormMessage>
+          )}
 
           <Button type="submit">Change Password</Button>
         </fieldset>
