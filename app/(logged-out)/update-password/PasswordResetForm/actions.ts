@@ -6,7 +6,6 @@ import { passwordResetTokens } from "@/db/passwordResetTokensSchema";
 import { users } from "@/db/usersSchema";
 import { passwordMatchSchema } from "@/validation/passwordMatch";
 import { hash } from "bcryptjs";
-import { log } from "console";
 import { eq } from "drizzle-orm";
 
 type TUpdatePassword = {
