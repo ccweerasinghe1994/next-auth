@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { passwordReset } from "./actions";
 
 const formSchema = z.object({
   email: emailSchema,
@@ -36,7 +37,7 @@ export default function ResetPasswordPage() {
   });
 
   const handleSubmit = async (data: z.infer<typeof formSchema>) => {
-    console.log(data);
+    await passwordReset(data);
   };
 
   return (
