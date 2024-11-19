@@ -32,7 +32,18 @@ export const get2factorSecret = async () => {
   let twoFactorSecret = user.twoFactorSecret;
 
   if (!twoFactorSecret) {
-    twoFactorSecret = authenticator.generateSecret();
+    twoFactorSecret = authenticator.generate(process.env.TWO_FACTOR_SECRET!);
+
+    try {
+      const isValid = authenticator.check(
+        twoFactorSecret,
+        process.env.TWO_FACTOR_SECRET!
+      );
+      console.log("isValid", isValid);
+    } catch (error) {
+      console.error(error);
+    }
+
     await db
       .update(users)
       .set({ twoFactorSecret })
