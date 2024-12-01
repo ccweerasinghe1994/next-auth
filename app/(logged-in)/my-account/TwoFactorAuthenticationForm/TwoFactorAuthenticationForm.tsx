@@ -9,7 +9,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { QRCodeSVG } from "qrcode.react";
 import { FormEvent, useState } from "react";
-import { get2factorSecret } from "./actions";
+import { disable2factor, enable2factor, get2factorSecret } from "./actions";
 
 export default function TwoFactorAuthenticationForm({
   towFactorAuthenticated,
@@ -22,7 +22,8 @@ export default function TwoFactorAuthenticationForm({
   );
   const [code, setCode] = useState<string>("");
   const [currentStep, setCurrentStep] = useState<number>(1);
-  console.log("step", currentStep);
+  const [otp, setOtp] = useState<string>("");
+
   const handleClick = async () => {
     const response = await get2factorSecret();
 
@@ -40,10 +41,47 @@ export default function TwoFactorAuthenticationForm({
 
   const handleOTPSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const response = await enable2factor(otp);
+    if (response?.error) {
+      toast({
+        variant: "destructive",
+        title: response.message,
+      });
+      return;
+    }
+    toast({
+      className: "bg-green-500 text-white",
+      title: "Two Factor Authentication Activated",
+    });
+    setTwoFactorActivated(true);
+  };
+
+  const handleDisable2factorAuthentication = async () => {
+    const response = await disable2factor();
+    if (response?.error) {
+      toast({
+        variant: "destructive",
+        title: response.message,
+      });
+      return;
+    }
+    toast({
+      variant: "destructive",
+      title: "Two Factor Authentication Disabled",
+    });
+    setTwoFactorActivated(false);
   };
 
   return (
     <div>
+      {!!twoFactorActivated && (
+        <Button
+          variant={"destructive"}
+          onClick={handleDisable2factorAuthentication}
+        >
+          Disable Two Factor Authentication
+        </Button>
+      )}
       {!twoFactorActivated && (
         <div>
           {currentStep === 1 && (
@@ -75,7 +113,7 @@ export default function TwoFactorAuthenticationForm({
               <p className="text-xs text-muted-foreground">
                 Please enter the 6 digit code from your authenticator app
               </p>
-              <InputOTP maxLength={6}>
+              <InputOTP maxLength={6} value={otp} onChange={setOtp}>
                 <InputOTPGroup>
                   <InputOTPSlot index={0} />
                   <InputOTPSlot index={1} />
@@ -88,7 +126,9 @@ export default function TwoFactorAuthenticationForm({
                   <InputOTPSlot index={5} />
                 </InputOTPGroup>
               </InputOTP>
-              <Button type="submit">Submit and Activate</Button>
+              <Button disabled={otp.length !== 6} type="submit">
+                Submit and Activate
+              </Button>
               <Button onClick={() => setCurrentStep(1)} variant={"outline"}>
                 Cancel
               </Button>

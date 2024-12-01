@@ -58,3 +58,60 @@ export const get2factorSecret = async () => {
     ),
   };
 };
+
+export const enable2factor = async (token: string) => {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return {
+      error: true,
+      message: "You are not logged in",
+    };
+  }
+  const [user] = await db
+    .select({
+      twoFactorSecret: users.twoFactorSecret,
+    })
+    .from(users)
+    .where(eq(users.id, parseInt(session.user.id)));
+
+  if (!user) {
+    return {
+      error: true,
+      message: "User not found",
+    };
+  }
+
+  if (user.twoFactorSecret) {
+    const isValidToken = authenticator.check(token, user.twoFactorSecret);
+
+    if (!isValidToken) {
+      return {
+        error: true,
+        message: "Invalid OTP",
+      };
+    }
+
+    await db
+      .update(users)
+      .set({ twoFactorActivated: true })
+      .where(eq(users.id, parseInt(session.user.id)));
+  }
+};
+
+
+export const disable2factor = async () => {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return {
+      error: true,
+      message: "You are not logged in",
+    };
+  }
+
+  await db
+    .update(users)
+    .set({ twoFactorActivated: false })
+    .where(eq(users.id, parseInt(session.user.id)));
+};
